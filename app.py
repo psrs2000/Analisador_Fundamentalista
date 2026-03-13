@@ -569,7 +569,7 @@ def tela_ranking():
     df_display["EV/EBITDA"]   = df_display["EV/EBITDA"].apply(lambda x: fmt(x, ".1f", suffix="x"))
     df_display["ROE"]         = df_display["ROE"].apply(lambda x: fmt(x, ".1f", multiplier=100, suffix="%"))
     df_display["Margem Líq."] = df_display["Margem Líq."].apply(lambda x: fmt(x, ".1f", multiplier=100, suffix="%"))
-    df_display["Div. Yield"]  = df_display["Div. Yield"].apply(lambda x: fmt(x, ".1f", multiplier=100, suffix="%"))
+    df_display["Div. Yield"]  = df_display["Div. Yield"].apply(lambda x: fmt(x, ".1f", suffix="%"))
     df_display["Upside"]      = df_display["Upside"].apply(lambda x: fmt(x, ".1f", multiplier=100, suffix="%"))
 
     st.dataframe(
@@ -928,8 +928,10 @@ def tela_comparacao():
         df_fmt[col] = df_fmt[col].apply(lambda x: fmt_safe(x, ".2f"))
     for col in ["Preço", "Preço Justo"]:
         df_fmt[col] = df_fmt[col].apply(lambda x: fmt_safe(x, ".2f", prefix="R$ "))
-    for col in ["Upside", "ROE", "Margem Líq.", "Div. Yield", "CAGR Receita", "CAGR Lucro"]:
+    for col in ["Upside", "ROE", "Margem Líq.", "CAGR Receita", "CAGR Lucro"]:
         df_fmt[col] = df_fmt[col].apply(lambda x: fmt_safe(x, ".1f", multiplier=100, suffix="%"))
+    for col in ["Div. Yield"]:
+        df_fmt[col] = df_fmt[col].apply(lambda x: fmt_safe(x, ".1f", suffix="%"))
     for col in ["P/L", "P/VP", "EV/EBITDA"]:
         df_fmt[col] = df_fmt[col].apply(lambda x: fmt_safe(x, ".1f", suffix="x"))
 
