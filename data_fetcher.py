@@ -125,7 +125,22 @@ def _calculate_indicators(data: dict) -> dict:
     ind["pvp"]              = info.get("priceToBook")
     ind["ev_ebitda"]        = info.get("enterpriseToEbitda")
     ind["ev_receita"]       = info.get("enterpriseToRevenue")
-    ind["dividend_yield"]   = info.get("dividendYield")
+    # Dividend Yield — alguns tickers BR retornam em % (ex: 14.18) em vez de decimal (0.1418)
+    # Usamos trailingAnnualDividendYield como referência — ele sempre vem em decimal
+    dy_raw = info.get("dividendYield")
+    dy_trailing = info.get("trailingAnnualDividendYield")
+    if dy_raw is not None:
+        if dy_trailing is not None and dy_trailing > 0 and dy_trailing < 1:
+            # Se dy_raw for ~100x maior que dy_trailing, está em percentual
+            ratio = dy_raw / dy_trailing
+            if 80 <= ratio <= 120:
+                ind["dividend_yield"] = dy_raw / 100
+            else:
+                ind["dividend_yield"] = dy_raw
+        else:
+            ind["dividend_yield"] = dy_raw
+    else:
+        ind["dividend_yield"] = dy_trailing  # fallback
 
     # Margens diretas do info
     ind["margem_bruta"]     = info.get("grossMargins")
